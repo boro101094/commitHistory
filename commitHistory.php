@@ -23,7 +23,7 @@ function commit_history_menu() {
 }
 add_action('admin_menu', 'commit_history_menu');
 
-// Callback function to display the "Hello, World!" message
+// Callback function to display the UI
 function commit_history_page() {
     ?>
     <div class="wrap">
@@ -39,6 +39,37 @@ function commit_history_page() {
             <button onclick="loadCommitHistory()">Load Commit History</button>
         </div>
     </div>
-   
+    <script>
+         function loadRepositories() {
+            var username = document.getElementById('username').value;
+            if (username.trim() !== '') {
+                var apiUrl = 'https://api.github.com/users/' + username + '/repos';
+                fetch(apiUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        var repositoryDropdown = document.getElementById('repository');
+                        repositoryDropdown.innerHTML = ''; // Clear previous options
+
+                        data.forEach(function(repo) {
+                            var option = document.createElement('option');
+                            option.text = repo.name;
+                            option.value = repo.name;
+                            repositoryDropdown.appendChild(option);
+                        });
+
+                        document.getElementById('repository-section').style.display = 'block';
+                    })
+                    .catch(error => {
+                        console.error('Error fetching repositories:', error);
+                        alert('Error fetching repositories. Please try again later.');
+                    });
+            } else {
+                alert('Please enter a username.');
+            }
+        }
+
+
+        
+    </script>
     <?php
 }
